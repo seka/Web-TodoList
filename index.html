@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <title>Todo_rewrite</title>
+
+    <link rel="stylesheet" href="public/stylesheets/index.css" media="all">
+</head>
+<body>
+<article>
+  <section>
+    <form action="#">
+      <label for="input-task">Task</label>
+      <input id="input-task" type="text">
+      <label for="input-limit">Limit</label>
+      <input id="input-limit" type="text">
+      <label for="input-priority">Priority</label>
+      <input id="input-priority" type="text">
+      <button id="todo-regist">登録</button>
+    </form>
+  </section>
+  <section>
+    <table>
+      <caption>My Todo</caption>
+      <thead>
+        <tr>
+          <th>Task</th>
+          <th>Limit</th>
+          <th>Priority</th>
+          <th>Status</th>
+          <th>Option</th>
+        </tr>
+      </thead>
+      <tbody id="todo-contents"></tbody>
+    </table>
+  </section>
+</article>
+<!-- script -->
+<script src="bower_components/jquery/dist/jquery.min.js"></script>
+<script src="public/javascripts/templates.js"></script>
+<script src="public/javascripts/todoDto.js"></script>
+<script src="public/javascripts/events.js"></script>
+<script src="public/javascripts/model.js"></script>
+<script src="public/javascripts/index.js"></script>
+</body>
+</html>

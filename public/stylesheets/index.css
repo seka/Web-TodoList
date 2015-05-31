@@ -1,0 +1,8 @@
+.todo-check {
+    text-decoration: line-through;
+}
+
+.todo-uncheck {
+    text-decoration: none;
+}
+
