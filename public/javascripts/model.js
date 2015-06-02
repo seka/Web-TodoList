@@ -19,14 +19,21 @@ window.TodoModel = (function(storage) {
         var size    = todos.length;
 
         function getStrage() {
-            return storage.getItem(SAVE_ID);
+            return JSON.parse(storage.getItem(SAVE_ID));
         };
 
-        function setStrage() {
-            storage.setItem(SAVE_ID, todos);
+        function setStrage(json) {
+            console.log("test");
+            storage.setItem(SAVE_ID, json);
         };
 
         return {
+            saveTodo: function() {
+                // TODO: サイズに応じて、どうやってセーブするかを選択できるようにする
+                var json = JSON.stringify(todos);
+                return setStrage(json);
+            },
+
             getSize: function() {
                 return todos.length;
             },
@@ -36,6 +43,7 @@ window.TodoModel = (function(storage) {
             },
 
             append: function(todo) {
+                console.log(todos);
                 todos.push(todo);
                 size++;
             },

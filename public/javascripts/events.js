@@ -12,20 +12,21 @@ window.TodoEvents = (function($) {
     }
 
     TodoEvents.prototype.registTodo = function() {
-        // TODO:入力値のバリデーションを行う
+        // TODO:入力値のバリデーションを行う必要有り
         var templates = _createTemplate(this.$task.val(), this.$limit.val(), this.$priority.val());
-        $('#todo-contents').append(templates);
+        $('#js-todo-contents').append(templates);
     };
 
     TodoEvents.prototype.removeTodo = function() {
         var $tr = $(this).closest('tr');
+        var res = $tr.index();
         $tr.remove();
-        return $tr.index();
+        return res;
     };
 
     TodoEvents.prototype.changeTodoState = function() {
         var $tr   = $(this).closest('tr');
-        var $task = $tr.find('.todo-task');
+        var $task = $tr.find('.js-todo-task');
         $task.toggleClass('todo-check todo-uncheck');
         return { "index": $tr.index(), "row": $tr };
     };
@@ -38,7 +39,7 @@ window.TodoEvents = (function($) {
         var $tr    = $p.closest('tr');
 
         // エンターキーが押された場合とフォーカスが外れた場合は編集終了
-        $input.keydown(customKeyDownEvent($p, $input, $tr, promise));
+        $input.keydown(customKeyDownEvent());
         $input.blur(customBlurEvent($p, $input, $tr, promise));
 
         // pタグとinputタグを交換する
@@ -46,14 +47,11 @@ window.TodoEvents = (function($) {
         $input.focus();
     };
 
-    // TODO: customkeydownevent, customblureventは似たような内容なので
-    // まとめる方法がないか探す
-    var customKeyDownEvent = function($p, $input, $tr, promise) {
+    var customKeyDownEvent = function() {
         var ENTER_KEY = 13;
         return function(e) {
             if (e.keyCode !== ENTER_KEY) return;
-            swapTagWithValue($p, $input)
-            promise.resolve({ "index": $tr.index(), "row": $tr });
+            $(this).blur();
         }
     };
 
