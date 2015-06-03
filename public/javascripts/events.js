@@ -9,6 +9,8 @@
  * 外部からアクセスすることがができなくなる
  */
 window.TodoEvents = (function($) {
+    'use strict';
+
     /**
      * Elementのオブジェクトであることを明示的に示すために
      * 接頭辞に$やelをつけることが多い
@@ -90,13 +92,14 @@ window.TodoEvents = (function($) {
         var ENTER_KEY = 13;
         return function(e) {
             if (e.keyCode !== ENTER_KEY) return;
+            // キー入力をした後はblurのイベントと共通処理である
             $(this).blur();
-        }
+        };
     };
 
     var customBlurEvent = function($p, $input, $tr, promise) {
-        return function(e) {
-            swapTagWithValue($p, $input)
+        return function() {
+            swapTagWithValue($p, $input);
             // 編集が完了したため、Promiseをresolve状態にする
             promise.resolve({ "index": $tr.index(), "row": $tr });
         };

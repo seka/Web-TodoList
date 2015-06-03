@@ -4,10 +4,15 @@
  */
 
 window.TodoModel = (function(storage) {
+    'use strict';
+
     /**
      * jsにおけるシングルトンパターンを実現するための方法の１つ
+     * この実装方法による利点は、newを行なっても同じインスタンスが返却されることである.
      */
     var instance;
+
+    var SAVE_ID = "MyTodoApplication";
 
     /**
      * init関数内でreturnされる以外のオブジェクトは
@@ -17,26 +22,20 @@ window.TodoModel = (function(storage) {
         /* todosには以下のフォーマットのオブジェクトが格納される
          * todos = [
          *      {
-         *          task: String
-         *          limit: Date
-         *          priority: enum('low', 'middle', 'high')
+         *          task: String,
+         *          limit: Date,
+         *          priority: enum('low', 'middle', 'high'),
          *          check: Bool
          *      },
-                ...
+         *      ...
          * ]
          */
         var todos   = getStrage() || [];
         var size    = todos.length;
 
-        var SAVE_ID = "MyTodoApplication";
-
         function getStrage() {
             return JSON.parse(storage.getItem(SAVE_ID));
-        };
-
-        function setStrage(json) {
-            storage.setItem(SAVE_ID, json);
-        };
+        }
 
         /**
          * クラスをオブジェクトで管理するという方法もある
@@ -51,7 +50,7 @@ window.TodoModel = (function(storage) {
             saveTodo: function() {
                 // TODO: サイズに応じて、どうやってセーブするかを選択できるようにする
                 var json = JSON.stringify(todos);
-                return setStrage(json);
+                return storage.setItem(SAVE_ID, json);
             },
 
             getSize: function() {
@@ -63,7 +62,6 @@ window.TodoModel = (function(storage) {
             },
 
             append: function(todo) {
-                console.log(todos);
                 todos.push(todo);
                 size++;
             },
@@ -91,15 +89,15 @@ window.TodoModel = (function(storage) {
     }
 
     /**
-     * 他のクラス内で、このクラスを扱いたい場合はgetInstanceメソッドを
-     * コールすることでinstanceを取得することができる
+     * newを行うと、getInstanceで生成されたオブジェクトが返却される
+     * コンストラクタで自身のインスタンスをチェックしている
      */
     return {
-        getInstance: function () {
+        getInstance: function() {
             if (!instance) {
                 instance = init();
             }
             return instance;
         }
     };
-})(sessionStorage);
+})(window.localStorage);

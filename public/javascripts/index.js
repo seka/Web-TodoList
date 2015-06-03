@@ -10,9 +10,11 @@
  * エラー防止のための案として、先頭にセミコロンを置くTipsである.
 */
 ;(function(window, $) {
+    'use strict';
+
     $(function (){
         /**
-         * DOMへのアクセスはcacheしておくべき
+         * DOMへのアクセスはできるだけcacheしておくべき
          */
         var $task     = $('#js-input-task');
         var $limit    = $('#js-input-limit');
@@ -25,32 +27,39 @@
         var todoEvents = new window.TodoEvents($task, $limit, $priority);
         var todoModel  = new window.TodoModel.getInstance();
 
-        /*
-         * todoModelのinstance作成時にローカルストレージから値を取り出しているので
-         * サイズが0以上であれば、Viewにそれを描画する
-         */
+         // todoModelのinstance作成時にローカルストレージから値を取り出しているので
+         // サイズが0以上であれば、Viewにそれを描画する
         if (todoModel.getSize() > 0){
             var _createTemplate = window.Templates.getTodoTemplate;
-            var i;
-            var size = todoModel.getSize();
+            var todos = todoModel.getTodos();
             var created = "";
 
-            for (i = 0; i < size; i++){
-                created += _createTemplate(v.task, v.limit, v.priority, v.check);
-            }
+            /**
+             * jsはシングルスレッドで動作する言語である。
+             * 負荷のかかる処理の実行はシングルスレッドの処理を中断してしまうため
+             * 0[ms]を指定をしたsetTimeoutをコールすることで
+             * イベントループを止めずに処理を実行するというTipsがある。
+             */
+            todos.forEach(function(v, i) {
+                setTimeout(function() {
+                    created += _createTemplate(v.task, v.limit, v.priority, v.check);
+                }, 0);
+            });
 
             /*
-             * 量にもよるが、appendを毎回ループで回すようなことをしてはいけない
+             * 操作量にもよるが、appendを毎回ループで回すようなことをしてはいけない
              * なるべくDOM操作は少ないほうが良い
              */
-            $('#js-todo-contents').append(created);
+            setTimeout(function() {
+                $('#js-todo-contents').append(created);
+            }, 0);
         }
 
-        $('#js-todo-regist').on('click', function(e) {
+        $('#js-todo-regist').on('click', function() {
             todoEvents.registTodo();
             var dto = makeDto($task.val(), $limit.val(), $priority.val(), false);
             todoModel.append(dto);
-            todoModel.saveTodo()
+            todoModel.saveTodo();
         });
 
         /**
@@ -58,7 +67,7 @@
          * 親要素をbindしonメソッドの第2引数で追加予定のElementを指定する
          * イベントハンドラはon, offメソッドで追加・削除することが推奨されている
          */
-        $('#js-todo-contents').on('click', '.js-todo-delete', function(e) {
+        $('#js-todo-contents').on('click', '.js-todo-delete', function() {
             var removeEvent = todoEvents.removeTodo.bind(this);
             var index = removeEvent();
 
@@ -67,27 +76,26 @@
             todoModel.saveTodo();
         });
 
-        $('#js-todo-contents').on('change', '.js-todo-check', function(e) {
+        $('#js-todo-contents').on('change', '.js-todo-check', function() {
             /*
              * bindはjsのthisを制御するための手法の1つである
              * 本来メソッドのthisはそれを呼び出した要素のスコープになっているが
              * 指定したオブジェクトのthisに束縛する
-             * ただし、Browser対応はIE8以降
+             * ただし、Browser対応はIE8以降なので注意が必要
              */
             var updateEvent = todoEvents.changeTodoState.bind(this);
             var indexWithRow = updateEvent();
 
             if (indexWithRow.index < 0) return;
-            var created = createTodoDto.bind(this);
             var dto = createTodoDto(indexWithRow.row);
             todoModel.update(indexWithRow.index, dto);
-            todoModel.saveTodo()
+            todoModel.saveTodo();
         });
 
-        $('#js-todo-contents').on('click', '.js-todo-update', function(e) {
+        $('#js-todo-contents').on('click', '.js-todo-update', function() {
             /*
-             * Promise（Deffered）は非同期処理をうまく扱うためのメソッドです.
-             * 一連の非同期処理を関数化することで、非同期処理を並列・直列に実行することができます.
+             * Promise（Deffered）は非同期処理をうまく扱うためのメソッドである.
+             * 一連の非同期処理を関数化することで、非同期処理を並列・直列に実行することができる.
              * Promiseオブジェクトには3つの状態がありpending(.state) resolved(.done) rejected(.fail)
              * 非同期処理の結果に応じて、それぞれに対応したcallback関数を呼び出すことができる.
              */
@@ -104,7 +112,7 @@
                 if (indexWithRow.index < 0) return;
                 var dto = createTodoDto(indexWithRow.row);
                 todoModel.update(indexWithRow.index, dto);
-                todoModel.saveTodo()
+                todoModel.saveTodo();
             }, this));
         });
     });
@@ -123,10 +131,10 @@
          * そのため、以下のような形でデフォルト引数を実現する
          */
         return {
-            task       : task     || ""
-            , limit    : limit    || ""
-            , priority : priority || 'low'
-            , check    : check    || false
+            task       : task   || "",
+            limit    : limit    || "",
+            priority : priority || 'low',
+            check    : check    || false
         };
     }
 
@@ -135,4 +143,4 @@
  * 変数や関数の衝突を防ぐための無名関数のローカルスコープに
  * 値を束縛するというTips（他にも、documentなどを渡す場合もある）
  */
-})(this, jQuery);
+})(window, jQuery);
