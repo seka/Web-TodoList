@@ -1,5 +1,7 @@
 window.Templates = {
     getTodoTemplate: function(task, limit, priority) {
+        // TODO:underscore.jsのテンプレートなどを使った方が見やすそう
+        // js-prefixをつけるのを忘れてはいけない
         return (
             '<tr><td><p class="js-todo-task js-todo-update todo-uncheck">' + task + '</p></td>'
             + '<td><p class="js-todo-limit">' + limit + '</p></td>'

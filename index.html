@@ -3,15 +3,20 @@
 <head>
     <meta charset="UTF-8">
     <title>Todo_rewrite</title>
-
     <link rel="stylesheet" href="public/stylesheets/index.css" media="all">
 </head>
 <body>
+<!-- HTML5になってからセマンティックという考え方が
+    （情報を整理し、正しく分類するという考え方）浸透してきた。
+    articleやsectionはそういった要素を実現するためのものであり
+    コンテンツの切れ目を表す（装飾などの目的ではない） -->
 <article>
   <section>
     <h2>New Task</h2>
     <div class="vertical-margin">
         <form action="#">
+          <!-- jsによって利用される可能性があるElementに対しては
+              js-prefixをつけるべきという考え方もある -->
           <label for="js-input-task">Task</label>
           <input id="js-input-task" type="text">
           <label for="js-input-limit">Limit</label>
@@ -22,9 +27,11 @@
         </form>
     </div>
   </section>
+  <!-- sectionとは、テーマに基づいてコンテンツをグループ化したもので、通常は見出しを伴う。
+      article要素とよく似ているが、articleは独立に成り立つコンテンツに対して使用される -->
   <section>
     <h2>Todo List</h2>
-    <table class="vertical-margin">
+    <table class="simple-table vertical-margin">
       <thead>
         <tr>
           <th>Task</th>
@@ -38,7 +45,10 @@
     </table>
   </section>
 </article>
-<!-- script -->
+<!-- プログレッシブ・レンダリングと呼ばれる手法
+    HTML5にはasync, deferといったDOMのブロッキングを避けるための要素があるが
+    jQueryなどに依存しているscriptにはそういったものが使えない。
+    そのため、body要素の直前にscriptタグの読み込みを行うことが推奨されている -->
 <script src="bower_components/jquery/dist/jquery.min.js"></script>
 <script src="public/javascripts/Templates.js"></script>
 <script src="public/javascripts/Events.js"></script>
