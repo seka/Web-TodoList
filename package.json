@@ -1,0 +1,26 @@
+{
+  "name": "web-todolist",
+  "version": "1.0.0",
+  "description": "シングルページのタスク（ToDo）管理アプリ. 今回は、jsの学習のために可読性を重視した 綺麗なコードを書くということを意識した",
+  "main": "index.js",
+  "dependencies": {
+    "bower": "^1.4.1"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/seka/Web-TodoList.git"
+  },
+  "author": "seka",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/seka/Web-TodoList/issues"
+  },
+  "homepage": "https://github.com/seka/Web-TodoList#readme",
+  "scripts": {
+    "install": "node_modules/bower/bin/bower install"
+  }
+}
