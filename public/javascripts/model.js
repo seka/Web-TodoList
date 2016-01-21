@@ -40,7 +40,6 @@ window.TodoModel = (function(storage) {
     /**
      * クラスをオブジェクトで管理するという方法もある
      * オブジェクトは、参照によって管理されているため実体は1つ
-     * （Shallow Copyした場合は別）
      */
     return {
       /**
